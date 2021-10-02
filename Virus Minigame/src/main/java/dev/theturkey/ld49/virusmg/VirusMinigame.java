@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,33 +18,31 @@ public class VirusMinigame extends JFrame
 {
 	public static final int TPS = 10;
 	private static final int NUM_FOLDERS = 32;
-	private static final int GAME_DURATION = 10 * TPS;
+	private static final int GAME_DURATION = 180 * TPS;
 
 	private GameState state = GameState.STARTING;
 
-	private JLabel initialSplash;
+	private final JLabel initialSplash;
 
-	private PlayerLabel player;
+	private final PlayerLabel player;
 	private final List<FolderLabel> folderLabels = new ArrayList<>();
 	private final List<VirusLabel> virusLabels = new ArrayList<>();
 	private final List<PowerUpLabel> powerUpLabels = new ArrayList<>();
-	private JProgressBar progressBar;
-	private JLabel timerLabel;
-	private JLabel infectedCountLabel;
-	private JLabel nonInfectedCountLabel;
+	private final JProgressBar progressBar;
+	private final JLabel timerLabel;
+	private final JLabel infectedCountLabel;
+	private final JLabel nonInfectedCountLabel;
 
 
 	private final List<JLabel> gameOverLabels = new ArrayList<>();
 
-	private String password;
-	private Core core;
+	private final String password;
 	private int timeLeft = 0;
 
 	private boolean won = false;
 
-	public VirusMinigame(Core core, String password)
+	public VirusMinigame(String password)
 	{
-		this.core = core;
 		this.password = password;
 		this.setAlwaysOnTop(true);
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -53,28 +52,6 @@ public class VirusMinigame extends JFrame
 
 		setLocationRelativeTo(null);
 
-		BufferedImage[] virus = new BufferedImage[4];
-		BufferedImage folder = null;
-		BufferedImage infectedFolder = null;
-		BufferedImage playerImage = null;
-		BufferedImage cancelImage = null;
-		BufferedImage frozenImage = null;
-		try
-		{
-			virus[0] = ImageIO.read(getClass().getResource("/virus_1.png"));
-			virus[1] = ImageIO.read(getClass().getResource("/virus_2.png"));
-			virus[2] = ImageIO.read(getClass().getResource("/virus_3.png"));
-			virus[3] = ImageIO.read(getClass().getResource("/virus_4.png"));
-			folder = ImageIO.read(getClass().getResource("/folder.png"));
-			infectedFolder = ImageIO.read(getClass().getResource("/folder_infected.png"));
-			playerImage = ImageIO.read(getClass().getResource("/virus_1.png"));
-			cancelImage = ImageIO.read(getClass().getResource("/cancel.png"));
-			frozenImage = ImageIO.read(getClass().getResource("/frozen.png"));
-		} catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-
 		// Apply a transparent color to the background
 		// This is REALLY important, without this, it won't work!
 		setBackground(new Color(0, 255, 0, 0));
@@ -82,22 +59,20 @@ public class VirusMinigame extends JFrame
 		this.setLayout(null);
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		screenSize.setSize(Math.min(screenSize.width, 1920), Math.min(screenSize.height, 1080));
 
-		this.initialSplash = new JLabel("OH NO!");
-		this.initialSplash.setBounds(screenSize.width / 2, screenSize.height / 2, 200, 100);
-		Font f = new Font(initialSplash.getFont().getName(), Font.BOLD, 28);
-		initialSplash.setFont(f);
-		initialSplash.setForeground(Color.RED);
+		this.initialSplash = new JLabel(new ImageIcon(getImage("/virus_splash.png")));
+		this.initialSplash.setBounds(screenSize.width / 2 - 300, screenSize.height / 2 - 300, 600, 600);
 		initialSplash.setVisible(false);
 		add(this.initialSplash);
 
-		this.player = new PlayerLabel(playerImage);
+		this.player = new PlayerLabel(getImage("/player_cursor.png"));
 		this.player.setVisible(false);
 		add(player);
 
-		for(BufferedImage image : virus)
+		for(int i = 0; i < 4; i++)
 		{
-			VirusLabel virusLabel = new VirusLabel(image);
+			VirusLabel virusLabel = new VirusLabel(getImage("/virus_" + (i + 1) + ".png"));
 			add(virusLabel);
 			virusLabel.setVisible(false);
 			virusLabels.add(virusLabel);
@@ -107,18 +82,18 @@ public class VirusMinigame extends JFrame
 		{
 			int x = ((i % 8) + 1) * (screenSize.width / 10);
 			int y = ((i / 8) + 1) * (screenSize.height / 6);
-			FolderLabel folderLabel = new FolderLabel(folder, infectedFolder, x, y);
+			FolderLabel folderLabel = new FolderLabel(getImage("/folder.png"), getImage("/folder_infected.png"), x, y);
 			add(folderLabel);
 			folderLabel.setVisible(false);
 			folderLabels.add(folderLabel);
 		}
 
-		PowerUpLabel cancelPowerUpLabel = new PowerUpLabel(PowerUpLabel.PowerUpType.CANCEL, cancelImage, 0, 0);
+		PowerUpLabel cancelPowerUpLabel = new PowerUpLabel(PowerUpLabel.PowerUpType.CANCEL, getImage("/cancel.png"), 0, 0);
 		add(cancelPowerUpLabel);
 		cancelPowerUpLabel.setVisible(false);
 		powerUpLabels.add(cancelPowerUpLabel);
 
-		PowerUpLabel frozenPowerUpLabel = new PowerUpLabel(PowerUpLabel.PowerUpType.FROZEN, frozenImage, 0, 0);
+		PowerUpLabel frozenPowerUpLabel = new PowerUpLabel(PowerUpLabel.PowerUpType.FROZEN, getImage("/frozen.png"), 0, 0);
 		add(frozenPowerUpLabel);
 		frozenPowerUpLabel.setVisible(false);
 		powerUpLabels.add(frozenPowerUpLabel);
@@ -127,7 +102,7 @@ public class VirusMinigame extends JFrame
 
 		timerLabel = new JLabel("Time Left: 180");
 		timerLabel.setBounds(screenSize.width - 250, 0, 300, 50);
-		f = new Font(timerLabel.getFont().getName(), Font.BOLD, 28);
+		Font f = new Font(timerLabel.getFont().getName(), Font.BOLD, 28);
 		timerLabel.setFont(f);
 		timerLabel.setForeground(Color.GREEN);
 		timerLabel.setBackground(Color.DARK_GRAY);
@@ -171,48 +146,39 @@ public class VirusMinigame extends JFrame
 		{
 			timeLeft -= 1;
 
-			switch(state)
+			if(state == GameState.IN_GAME)
 			{
-				case STARTING:
-					break;
-				case IN_GAME:
-					for(VirusLabel virusLabel : virusLabels)
+				for(VirusLabel virusLabel : virusLabels)
+					virusLabel.tick(this);
+
+				this.player.tick(this);
+
+				double chance = Math.random() * 1000;
+
+				if(chance < 25)
+				{
+					List<PowerUpLabel> toChoose = powerUpLabels.stream().filter(p -> !p.isVisible()).collect(Collectors.toList());
+
+					if(toChoose.size() != 0)
 					{
-						//TODO: Add better logic
-						virusLabel.tick(this);
+						PowerUpLabel toDrop = toChoose.get((int) (Math.random() * toChoose.size()));
+						int xLoc = (int) ((Math.random() * (screenSize.width - 200)) + 100);
+						int yLoc = (int) ((Math.random() * (screenSize.height - 100)) + 50);
+						toDrop.setLocation(xLoc, yLoc);
+						toDrop.setVisible(true);
 					}
-					this.player.tick(this);
+				}
 
-					double chance = Math.random() * 1000;
+				int infected = (int) folderLabels.stream().filter(FolderLabel::isInfected).count();
+				infectedCountLabel.setText("Infected Folders: " + infected);
+				nonInfectedCountLabel.setText("Non-Infected Folders: " + (NUM_FOLDERS - infected));
+				timerLabel.setText("Time Left: " + timeLeft / TPS);
 
-					if(chance < 25)
-					{
-						List<PowerUpLabel> toChoose = powerUpLabels.stream().filter(p -> !p.isVisible()).collect(Collectors.toList());
-
-						if(toChoose.size() != 0)
-						{
-							PowerUpLabel toDrop = toChoose.get((int) (Math.random() * toChoose.size()));
-							int xLoc = (int) ((Math.random() * (screenSize.width - 200)) + 100);
-							int yLoc = (int) ((Math.random() * (screenSize.height - 100)) + 50);
-							toDrop.setLocation(xLoc, yLoc);
-							toDrop.setVisible(true);
-						}
-					}
-
-					int infected = (int) folderLabels.stream().filter(FolderLabel::isInfected).count();
-					infectedCountLabel.setText("Infected Folders: " + infected);
-					nonInfectedCountLabel.setText("Non-Infected Folders: " + (NUM_FOLDERS - infected));
-					timerLabel.setText("Time Left: " + timeLeft / TPS);
-
-					if(timeLeft <= 0)
-					{
-						changeGameState(GameState.GAME_OVER);
-					}
-					break;
-				case GAME_OVER:
-					break;
+				if(timeLeft <= 0)
+				{
+					changeGameState(GameState.GAME_OVER);
+				}
 			}
-
 		});
 		timer.setInitialDelay(0);
 		timer.start();
@@ -236,7 +202,7 @@ public class VirusMinigame extends JFrame
 				{
 					if(won)
 					{
-						VirusMinigame.this.core.endMiniGame();
+						Core.endMiniGame();
 						VirusMinigame.this.dispatchEvent(new WindowEvent(VirusMinigame.this, WindowEvent.WINDOW_CLOSING));
 					}
 					else
@@ -255,6 +221,21 @@ public class VirusMinigame extends JFrame
 		});
 
 		changeGameState(GameState.STARTING);
+	}
+
+	private BufferedImage getImage(String path)
+	{
+		try
+		{
+			URL url = getClass().getResource(path);
+			if(url == null)
+				return null;
+
+			return ImageIO.read(url);
+		} catch(Exception e)
+		{
+			return null;
+		}
 	}
 
 	private void changeGameState(GameState newState)

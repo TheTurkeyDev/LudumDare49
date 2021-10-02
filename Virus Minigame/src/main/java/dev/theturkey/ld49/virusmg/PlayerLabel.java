@@ -25,7 +25,7 @@ public class PlayerLabel extends JLabel
 	{
 		if(keyInputs[4])
 		{
-			FolderLabel closest = game.getClosestFolderWithin(this.getX(), this.getY(), 32);
+			FolderLabel closest = game.getClosestFolderWithin(this.getX() - 16, this.getY() - 32, 32);
 			if(closest != null && closest.isInfected())
 			{
 				uninfectingDuration++;
@@ -57,7 +57,7 @@ public class PlayerLabel extends JLabel
 		double changeY = Math.sin(angle) * MAX_SPEED;
 		this.setLocation((int) (this.getX() + changeX), (int) (this.getY() + changeY));
 
-		PowerUpLabel closestPowerUp = game.getClosestPowerUpWithin(this.getX(), this.getY(), 50);
+		PowerUpLabel closestPowerUp = game.getClosestPowerUpWithin(this.getX() + 8, this.getY() - 32, 50);
 		if(closestPowerUp != null)
 			closestPowerUp.onPickup(game);
 	}
