@@ -10,6 +10,8 @@ public class InfoPanel extends JPanel
 	private final JLabel virusRemove;
 	private final JLabel faveAnimal;
 	private final JLabel osFilesSorted;
+	private final JLabel defragedHDD;
+	private final JButton launchDefrag;
 
 	private final JLabel winnerLabel;
 	private final JButton exit;
@@ -44,6 +46,17 @@ public class InfoPanel extends JPanel
 		osFilesSorted.setForeground(Core.isOSFilesSorted() ? Color.GREEN : Color.RED);
 		osFilesSorted.setFont(f);
 
+		defragedHDD = new JLabel("\u2139 Hard Drive Defragged  " + (Core.isHddDefragged() ? "\u2714" : "\u274C"));
+		defragedHDD.setToolTipText("Click the button to defrag the hard drive!");
+		this.initTextComponent(defragedHDD, 400, 50, 50, 250);
+		defragedHDD.setForeground(Core.isHddDefragged() ? Color.GREEN : Color.RED);
+		defragedHDD.setFont(f);
+
+		launchDefrag = new JButton("Start Defrag");
+		this.initTextComponent(launchDefrag, 150, 25, 600, 265);
+		launchDefrag.setVisible(!Core.isHddDefragged());
+		launchDefrag.addActionListener(actionEvent -> Core.startDefragMiniGame());
+
 		winnerLabel = new JLabel("Computer Fixed! You Win!");
 		this.initTextComponent(winnerLabel, 400, 50, 50, MainUI.HEIGHT - 100);
 		winnerLabel.setForeground(Color.GREEN);
@@ -70,6 +83,7 @@ public class InfoPanel extends JPanel
 		boolean virusMG = Core.hasBeatVirusMiniGame();
 		boolean fave = Core.isFaveAnimalCorrect();
 		boolean osSorted = Core.isOSFilesSorted();
+		boolean hddDefragged = Core.isHddDefragged();
 
 		virusRemove.setForeground(virusMG ? Color.GREEN : Color.RED);
 		virusRemove.setText("\u2139 Virus Removed  " + (virusMG ? "\u2714" : "\u274C"));
@@ -77,8 +91,11 @@ public class InfoPanel extends JPanel
 		faveAnimal.setText("\u2139 Favorite Animal Restored  " + (fave ? "\u2714" : "\u274C"));
 		osFilesSorted.setForeground(osSorted ? Color.GREEN : Color.RED);
 		osFilesSorted.setText("\u2139 OS Files Sorted  " + (osSorted ? "\u2714" : "\u274C"));
+		defragedHDD.setForeground(hddDefragged ? Color.GREEN : Color.RED);
+		defragedHDD.setText("\u2139 Hard Drive Defragged  " + (hddDefragged ? "\u2714" : "\u274C"));
+		launchDefrag.setVisible(!Core.isHddDefragged());
 
-		boolean gameOver = fave && virusMG && osSorted;
+		boolean gameOver = fave && virusMG && osSorted && hddDefragged;
 		winnerLabel.setVisible(gameOver);
 		exit.setVisible(gameOver);
 	}

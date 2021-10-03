@@ -203,7 +203,8 @@ public class VirusMinigame extends JFrame
 					if(won)
 					{
 						Core.endMiniGame();
-						VirusMinigame.this.dispatchEvent(new WindowEvent(VirusMinigame.this, WindowEvent.WINDOW_CLOSING));
+
+						VirusMinigame.this.dispose();
 					}
 					else
 					{

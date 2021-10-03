@@ -21,6 +21,7 @@ public class MainUI extends JFrame
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setSize(WIDTH, HEIGHT);
+		this.setResizable(false);
 
 		this.getContentPane().setBackground(BG_COLOR);
 		this.setLayout(null);
@@ -29,6 +30,7 @@ public class MainUI extends JFrame
 		this.add(startPanel);
 
 		infoPanel = new InfoPanel(this);
+		infoPanel.setVisible(false);
 		this.add(infoPanel);
 
 		startPanel.setVisible(true);
@@ -63,9 +65,7 @@ public class MainUI extends JFrame
 	public void refresh()
 	{
 		if(currentPanel == Panels.INFO)
-		{
 			infoPanel.refresh();
-		}
 	}
 
 	public enum Panels

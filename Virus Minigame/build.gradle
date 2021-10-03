@@ -1,9 +1,12 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group 'dev.theturkey.ld49'
-version '1.0-SNAPSHOT'
+version '1.0'
+archivesBaseName = "The-Virus"
+applicationName = 'the-virus'
 
 repositories {
     mavenCentral()
@@ -13,6 +16,19 @@ dependencies {
     implementation group: 'net.lingala.zip4j', name: 'zip4j', version: '2.9.0'
 }
 
+application {
+    mainClassName = 'dev.theturkey.ld49.Core'
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Version': project.version
+    }
+}
+
 test {
     useJUnitPlatform()
 }
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11

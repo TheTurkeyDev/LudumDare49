@@ -15,8 +15,8 @@ public class StartPanel extends JPanel
 		this.setBackground(MainUI.BG_COLOR);
 		this.setLayout(null);
 
-		JLabel title = new JLabel("WELCOME TO TBN");
-		this.initTextComponent(title, 500, 50, (MainUI.WIDTH / 2), 50);
+		JLabel title = new JLabel("WELCOME TO THE VIRUS", SwingConstants.CENTER);
+		this.initTextComponent(title, MainUI.WIDTH, 50, (MainUI.WIDTH / 2), 50);
 		Font f = new Font(title.getFont().getName(), Font.BOLD, 50);
 		title.setFont(f);
 
@@ -24,7 +24,10 @@ public class StartPanel extends JPanel
 				"folders and files that get created where you specify below)! The next screen will show you all the " +
 				"tasks you have to complete and have completed. Hovering over the text will give you helpful information " +
 				"about what the task refers to. This is meant to be more of a puzzle sort of game, so the hints aren't " +
-				"very specific.\n\n If you get an error pop up, just try and close and restart the game. Closing this " +
+				"very specific.\n\nOnce you proceed to the next screen, open the folder you selected (Preferably an empty one) " +
+				" and view the contents. TXT files are meant to be opened and have their contents changed. Files with no " +
+				"extension have no benefit to opening and changing their contents. DO NOT CHANGE ANY FILE NAME!" +
+				"\n\nIf you get an error pop up, just try and close and restart the game. Closing this " +
 				"window will close and end the game, but, closing any of the other generated windows will not. Some of" +
 				"the popup windows have no background to them and are therefore click-throughable, so make sure to " +
 				"click on any of the text or images to regain focus if your inputs aren't registering or are focused " +
@@ -32,7 +35,7 @@ public class StartPanel extends JPanel
 		textArea.setLineWrap(true);
 		textArea.setEditable(false);
 		textArea.setWrapStyleWord(true);
-		this.initTextComponent(textArea, MainUI.WIDTH - 50, 350, (MainUI.WIDTH / 2), (MainUI.HEIGHT / 2));
+		this.initTextComponent(textArea, MainUI.WIDTH - 50, 380, (MainUI.WIDTH / 2), (MainUI.HEIGHT / 2) - 30);
 		f = new Font(title.getFont().getName(), Font.PLAIN, 18);
 		textArea.setFont(f);
 
@@ -64,8 +67,11 @@ public class StartPanel extends JPanel
 		this.initTextComponent(start, 75, 25, MainUI.WIDTH / 2, MainUI.HEIGHT - 60);
 		start.addActionListener(actionEvent ->
 		{
-			Core.initFileSystem();
-			frame.setCurrentPanel(MainUI.Panels.INFO);
+			if(!Core.BASE_FOLDER.trim().equalsIgnoreCase(""))
+			{
+				Core.initFileSystem();
+				frame.setCurrentPanel(MainUI.Panels.INFO);
+			}
 		});
 	}
 
