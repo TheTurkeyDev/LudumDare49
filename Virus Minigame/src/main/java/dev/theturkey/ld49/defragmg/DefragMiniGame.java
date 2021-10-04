@@ -12,7 +12,7 @@ public class DefragMiniGame extends JFrame
 {
 	public static final int TPS = 30;
 	private static final int GAME_DURATION = 180 * TPS;
-	private static final int NUM_CORRECT_NEEDED = 1;
+	private static final int NUM_CORRECT_NEEDED = 100;
 
 	private GameState state = GameState.START;
 	private int timeLeft = GAME_DURATION;

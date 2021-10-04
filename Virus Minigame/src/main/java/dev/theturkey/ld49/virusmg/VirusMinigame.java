@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.ArrayList;
@@ -275,7 +274,10 @@ public class VirusMinigame extends JFrame
 				break;
 			case IN_GAME:
 				for(FolderLabel folderLabel : folderLabels)
+				{
+					folderLabel.setInfected(false);
 					folderLabel.setVisible(true);
+				}
 				for(VirusLabel virusLabel : virusLabels)
 					virusLabel.setVisible(true);
 				for(PowerUpLabel powerUpLabel : powerUpLabels)

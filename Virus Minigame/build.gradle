@@ -4,9 +4,11 @@ plugins {
 }
 
 group 'dev.theturkey.ld49'
-version '1.0'
+version '1.1'
 archivesBaseName = "The-Virus"
 applicationName = 'the-virus'
+
+sourceCompatibility = targetCompatibility = '1.8'
 
 repositories {
     mavenCentral()
@@ -29,6 +31,3 @@ jar {
 test {
     useJUnitPlatform()
 }
-
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
